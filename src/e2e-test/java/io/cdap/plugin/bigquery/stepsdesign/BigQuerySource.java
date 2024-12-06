@@ -288,8 +288,6 @@ public class BigQuerySource implements E2EHelper {
     Assert.assertEquals(expectedColor, actualColor);
   }
 
-
-
   @Then("Enter BigQuery source property {string} as macro argument {string}")
   public void enterBigQuerySourcePropertyAsMacroArgument(String pluginProperty, String macroArgument) {
     enterPropertyAsMacroArgument(pluginProperty, macroArgument);

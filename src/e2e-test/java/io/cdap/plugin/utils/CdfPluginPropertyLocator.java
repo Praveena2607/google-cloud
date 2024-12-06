@@ -59,8 +59,6 @@ public enum CdfPluginPropertyLocator {
             .put("partitionFrom", CdfPluginPropertyLocator.PARTITION_START_DATE)
             .put("partitionTo", CdfPluginPropertyLocator.PARTITION_END_DATE)
             .put("filter", CdfPluginPropertyLocator.FILTER)
-
-
             .put("Output Schema-macro-input", CdfPluginPropertyLocator.OUTPUT_SCHEMA)
             .put("sampleSize", CdfPluginPropertyLocator.SAMPLE_SIZE)
             .put("delimiter", CdfPluginPropertyLocator.DELIMITER)

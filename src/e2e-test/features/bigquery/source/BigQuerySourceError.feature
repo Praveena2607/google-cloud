@@ -57,7 +57,7 @@ Feature: BigQuery source - Validate BigQuery source plugin error scenarios
     Then Verify the BigQuery validation error message for invalid property "bucket"
 
   @BQ_SOURCE_TEST
-  Scenario Outline:Verify if invalid Partition Start date and Partition end Date format at design time or check pipeline fails while preview
+  Scenario Outline:Verify if invalid Partition Start date and Partition end Date format at design time
     Given Open Datafusion Project to configure pipeline
     When Expand Plugin group in the LHS plugins list: "Source"
     When Select plugin: "BigQuery" from the plugins list as: "Source"

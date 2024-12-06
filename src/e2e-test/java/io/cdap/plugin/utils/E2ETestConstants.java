@@ -19,7 +19,7 @@ public class E2ETestConstants {
   public static final String ERROR_MSG_BQ_INCORRECT_PROPERTY = "errorMessageIncorrectBQProperty";
   public static final String ERROR_MSG_INCORRECT_PARTITIONSTARTDATE= "errorMessageIncorrectPartitionStartDate";
   public static final String ERROR_MSG_INCORRECT_PARTITIONENDDATE= "errorMessageIncorrectPartitionEndDate";
-  public static final String ERROR_MSG_INCORRECT_REFERENCENAME= "errorMessageInvalidReferenceName";
+  public static final String ERROR_MSG_INCORRECT_REFERENCENAME= "errorMessageIncorrectReferenceName";
   public static final String ERROR_MSG_INCORRECT_FILTER= "errorMessageIncorrectRegexPathFilter";
 
 }

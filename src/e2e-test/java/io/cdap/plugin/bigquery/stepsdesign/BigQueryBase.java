@@ -18,6 +18,9 @@ package io.cdap.plugin.bigquery.stepsdesign;
 import io.cdap.e2e.pages.actions.CdfBigQueryPropertiesActions;
 import io.cdap.e2e.pages.actions.CdfStudioActions;
 import io.cdap.e2e.pages.locators.CdfStudioLocators;
+import io.cdap.e2e.utils.ElementHelper;
+import io.cdap.e2e.utils.PluginPropertyUtils;
+import io.cdap.e2e.utils.SeleniumHelper;
 import io.cdap.e2e.utils.*;
 import io.cdap.plugin.common.stepsdesign.TestSetupHooks;
 import io.cdap.plugin.utils.CdfPluginPropertyLocator;
@@ -68,12 +71,6 @@ public class BigQueryBase implements E2EHelper {
   public void enterBigQueryPropertyDataset(String dataset) {
     CdfBigQueryPropertiesActions.enterBigQueryDataset(PluginPropertyUtils.pluginProp(dataset));
   }
-
-  @Then("Enter BigQuery property partitionFrom {string}")
-  public void enterBigQueryProperty(String partitionFrom) {
-    // CdfBigQueryPropertiesActions.enterPartitionStartDate(PluginPropertyUtils.pluginProp(partitionFrom));
-  }
-
 
   @Then("Enter BigQuery property table {string}")
   public void enterBigQueryPropertyTable(String table) {
@@ -245,11 +242,6 @@ public class BigQueryBase implements E2EHelper {
     CdfBigQueryPropertiesActions.enterTemporaryBucketName(PluginPropertyUtils.pluginProp(temporaryBucket));
   }
 
-  @Then("Enter BigQuery property reference name {string}")
-  public void EnterBigQuerypropertyreferencename(String referenceName) throws IOException {
-    CdfBigQueryPropertiesActions.enterBigQueryReferenceName(PluginPropertyUtils.pluginProp(referenceName));
-  }
-
   @Then("Verify the BigQuery validation error message for invalid property {string}")
   public void verifyTheBigQueryValidationErrorMessageForInvalidProperty(String property) {
     CdfStudioActions.clickValidateButton();
@@ -322,17 +314,5 @@ public class BigQueryBase implements E2EHelper {
     int count = result.map(Integer::parseInt).orElse(0);
     BeforeActions.scenario.write("Number of records transferred from source table to target table:" + count);
     Assert.assertEquals(count, countRecordsTarget);
-  }
-
-  @Then("Enter BigQuery property output schema {string} as macro argument {string}")
-  public void enterBigQueryPropertyOutputSchemaAsMacroArgument(String property, String macroArgument) {
-    SCHEMA_LOCATORS.schemaActions.click();
-    SCHEMA_LOCATORS.schemaActionType("macro").click();
-    WaitHelper.waitForElementToBeHidden(SCHEMA_LOCATORS.schemaActionType("macro"), 5);
-    try {
-      enterMacro(CdfPluginPropertyLocator.fromPropertyString(property).pluginProperty, macroArgument);
-    } catch (NullPointerException e) {
-      Assert.fail("CDF_PLUGIN_PROPERTY_MAPPING for '" + property + "' not present in CdfPluginPropertyLocator.");
-    }
   }
 }
