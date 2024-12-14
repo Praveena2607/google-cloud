@@ -69,9 +69,8 @@ Feature: BigQuery source - Validate BigQuery source plugin error scenarios
     Then Enter BigQuery source properties partitionFrom and partitionTo
     Then Validate BigQuery source incorrect property error for Partition Start date "<property>" value "<value>"
     Then Validate BigQuery source incorrect property error for Partition End date "<property>" value "<value>"
-    Then Enter BigQuery source properties referenceName
+    And Enter input plugin property: "referenceName" with value: "bqIncorrectReferenceName"
     Then Validate BigQuery source incorrect property error for reference name"<property>" value "<value>"
-    Then Enter BigQuery source properties filter
     Examples:
       | property             | value                       |
       | partitionFrom        | bqIncorrectFormatStartDate  |
