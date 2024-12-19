@@ -78,10 +78,10 @@ public enum CdfPluginPropertyLocator {
       .put("createFailIfObjectExists", CdfPluginPropertyLocator.GCS_CREATE_FAIL_IF_OBJECT_EXISTS)
       .put("gcsMoveSourcePath", CdfPluginPropertyLocator.GCS_MOVE_SOURCE_PATH)
       .put("gcsMoveDestinationPath", CdfPluginPropertyLocator.GCS_MOVE_DESTINATION_PATH)
-      .put("partitionFrom", CdfPluginPropertyLocator.PARTITION_START_DATE)
-      .put("partitionTo", CdfPluginPropertyLocator.PARTITION_END_DATE)
       .put("filter", CdfPluginPropertyLocator.FILTER)
       .put("Output Schema-macro-input", CdfPluginPropertyLocator.OUTPUT_SCHEMA)
+      .put("partitionFrom", CdfPluginPropertyLocator.PARTITION_START_DATE)
+      .put("partitionTo", CdfPluginPropertyLocator.PARTITION_END_DATE)
       .build();
   }
 
