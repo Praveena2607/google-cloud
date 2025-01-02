@@ -16,23 +16,18 @@
 package io.cdap.plugin.bigquery.stepsdesign;
 
 import io.cdap.e2e.pages.actions.CdfBigQueryPropertiesActions;
-import io.cdap.e2e.pages.actions.CdfPluginPropertiesActions;
 import io.cdap.e2e.pages.actions.CdfStudioActions;
-import io.cdap.e2e.pages.locators.CdfBigQueryPropertiesLocators;
 import io.cdap.e2e.pages.locators.CdfStudioLocators;
 import io.cdap.e2e.utils.BigQueryClient;
 import io.cdap.e2e.utils.ConstantsUtil;
 import io.cdap.e2e.utils.ElementHelper;
 import io.cdap.e2e.utils.PluginPropertyUtils;
 import io.cdap.e2e.utils.SeleniumHelper;
-import io.cdap.e2e.utils.WaitHelper;
 import io.cdap.plugin.common.stepsdesign.TestSetupHooks;
-import io.cdap.plugin.utils.CdfPluginPropertyLocator;
 import io.cdap.plugin.utils.E2EHelper;
 import io.cdap.plugin.utils.E2ETestConstants;
 import io.cucumber.java.en.Then;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.time.DateUtils;
 import org.junit.Assert;
 import stepsdesign.BeforeActions;
 
@@ -40,7 +35,6 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Optional;
-import java.util.Properties;
 import java.util.UUID;
 
 /**
