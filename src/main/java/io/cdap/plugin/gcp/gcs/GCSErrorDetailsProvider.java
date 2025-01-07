@@ -17,6 +17,7 @@
 package io.cdap.plugin.gcp.gcs;
 
 import io.cdap.plugin.gcp.common.GCPErrorDetailsProvider;
+import io.cdap.plugin.gcp.common.GCPUtils;
 
 /**
  * A custom ErrorDetailsProvider for GCS plugins.
@@ -25,6 +26,6 @@ public class GCSErrorDetailsProvider extends GCPErrorDetailsProvider {
 
   @Override
   protected String getExternalDocumentationLink() {
-    return "https://cloud.google.com/storage/docs/json_api/v1/status-codes";
+    return GCPUtils.GCS_SUPPORTED_DOC_URL;
   }
 }

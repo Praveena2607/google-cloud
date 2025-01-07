@@ -25,6 +25,7 @@ import com.google.cloud.bigquery.JobStatistics;
 import com.google.cloud.bigquery.JobStatus;
 import com.google.cloud.bigquery.QueryJobConfiguration;
 import com.google.cloud.bigquery.TableResult;
+import com.google.common.collect.ImmutableSet;
 import io.cdap.cdap.api.metrics.Metrics;
 import io.cdap.cdap.etl.api.StageMetrics;
 import io.cdap.cdap.etl.api.action.ActionContext;
@@ -37,6 +38,7 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
+import java.util.Set;
 
 public class BigQueryExecuteTest {
   @Mock
@@ -224,6 +226,25 @@ public class BigQueryExecuteTest {
     Assert.assertEquals(1, failureCollector.getValidationFailures().size());
     Assert.assertEquals("Read timeout must be greater than 0.",
             failureCollector.getValidationFailures().get(0).getMessage());
+  }
+
+  @Test
+  public void testValidateWritePreferenceWithInvalidValue() {
+    config.validateWritePreference(failureCollector, "INVALID_PREFERENCE");
+
+    // Assert validation failure
+    Assert.assertEquals(1, failureCollector.getValidationFailures().size());
+    Assert.assertEquals(
+        String.format("Invalid write preference 'INVALID_PREFERENCE'. Allowed values are '%s'.",
+            config.VALID_WRITE_PREFERENCES.toString()
+        ),
+        failureCollector.getValidationFailures().get(0).getMessage()
+    );
+  }
+
+  @Test
+  public void testDefaultWritePreference() {
+    Assert.assertEquals(JobInfo.WriteDisposition.WRITE_EMPTY.name(), config.getWritePreference());
   }
 
 }

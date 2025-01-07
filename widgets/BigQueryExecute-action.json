@@ -151,6 +151,29 @@
           }
         },
         {
+          "widget-type": "radio-group",
+          "label": "Destination Table Write Preference",
+          "name": "writePreference",
+          "widget-attributes": {
+            "layout": "vertical",
+            "default": "WRITE_EMPTY",
+            "options": [
+              {
+                "id": "WRITE_EMPTY",
+                "label": "Write if Empty"
+              },
+              {
+                "id": "WRITE_APPEND",
+                "label": "Append to Table"
+              },
+              {
+                "id": "WRITE_TRUNCATE",
+                "label": "Overwrite Table"
+              }
+            ]
+          }
+        },
+        {
           "name": "rowAsArguments",
           "label": "Row As Arguments",
           "widget-type": "toggle",
@@ -313,6 +336,10 @@
         {
           "type": "property",
           "name": "cmekKey"
+        },
+        {
+          "type": "property",
+          "name": "writePreference"
         }
       ]
     }

@@ -36,6 +36,7 @@ import com.google.common.reflect.TypeToken;
 import com.google.gson.Gson;
 import io.cdap.cdap.api.data.schema.Schema;
 import io.cdap.cdap.api.exception.ErrorCategory;
+import io.cdap.cdap.api.exception.ErrorCodeType;
 import io.cdap.cdap.api.exception.ErrorType;
 import io.cdap.cdap.api.exception.ErrorUtils;
 import io.cdap.cdap.etl.api.FailureCollector;
@@ -196,10 +197,12 @@ public final class BigQuerySinkUtils {
         // This most likely means multiple stages in the same pipeline are trying to create the same dataset.
         // Ignore this and move on, since all that matters is that the dataset exists.
         ErrorUtils.ActionErrorPair pair = ErrorUtils.getActionErrorByStatusCode(e.getCode());
-        String errorReason = String.format("%s %s %s", e.getCode(), e.getMessage(), pair.getCorrectiveAction());
+        String errorReason = String.format("%s %s %s For more details, see %s", e.getCode(),
+            e.getMessage(), pair.getCorrectiveAction(), GCPUtils.BQ_SUPPORTED_DOC_URL);
         throw ErrorUtils.getProgramFailureException(
           new ErrorCategory(ErrorCategory.ErrorCategoryEnum.PLUGIN), errorReason, errorMessage.get(),
-          pair.getErrorType(), true, e);
+          pair.getErrorType(), true, ErrorCodeType.HTTP, String.valueOf(e.getCode()),
+            GCPUtils.BQ_SUPPORTED_DOC_URL, e);
       }
     }
   }
@@ -244,10 +247,12 @@ public final class BigQuerySinkUtils {
         // This most likely means multiple stages in the same pipeline are trying to create the same dataset.
         // Ignore this and move on, since all that matters is that the dataset exists.
         ErrorUtils.ActionErrorPair pair = ErrorUtils.getActionErrorByStatusCode(e.getCode());
-        String errorReason = String.format("%s %s %s", e.getCode(), e.getMessage(), pair.getCorrectiveAction());
+        String errorReason = String.format("%s %s %s For more details, see %s", e.getCode(),
+            e.getMessage(), pair.getCorrectiveAction(), GCPUtils.GCS_SUPPORTED_DOC_URL);
         throw ErrorUtils.getProgramFailureException(
           new ErrorCategory(ErrorCategory.ErrorCategoryEnum.PLUGIN), errorReason, errorMessage.get(),
-          pair.getErrorType(), true, e);
+          pair.getErrorType(), true, ErrorCodeType.HTTP, String.valueOf(e.getCode()),
+            GCPUtils.GCS_SUPPORTED_DOC_URL, e);
       }
     }
   }

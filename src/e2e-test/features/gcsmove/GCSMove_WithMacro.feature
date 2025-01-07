@@ -17,7 +17,7 @@ Feature:GCSMove - Verification of successful objects move from one bucket to ano
     Then Validate "GCSMove" plugin properties
     Then Close GCSMove properties
     Then Save and Deploy Pipeline
-    Then Run the Pipeline in Runtime
+    Then Click on the Runtime Arguments Dropdown button
     Then Enter runtime argument value "projectId" for key "gcsMoveProjectId"
     Then Enter runtime argument value "gcsCsvFile" for GCSMove property sourcePath key "gcsMoveSourcePath"
     Then Enter runtime argument value for GCSMove property destination path key "gcsMoveDestinationPath"

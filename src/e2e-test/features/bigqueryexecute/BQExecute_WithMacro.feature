@@ -19,7 +19,7 @@ Feature: BigQueryExecute - Verify data transfer using BigQuery Execute plugin wi
     Then Validate "BigQuery Execute" plugin properties
     Then Close the Plugin Properties page
     Then Save and Deploy Pipeline
-    Then Run the Pipeline in Runtime
+    Then Click on the Runtime Arguments Dropdown button
     Then Enter runtime argument value "projectId" for key "bqeProjectId"
     Then Enter runtime argument value "bqExecuteQuery" for key "bqeSQl"
     Then Enter runtime argument value "projectId" for key "bqeDatasetProjectId"

@@ -50,7 +50,7 @@ Feature: PubSub-Sink - Verification of GCS to PubSub successful data transfer wi
     Then Close the pipeline logs
     Then Close the preview
     Then Deploy the pipeline
-    Then Run the Pipeline in Runtime
+    Then Click on the Runtime Arguments Dropdown button
     Then Enter runtime argument value "projectId" for key "PubSubProjectId"
     Then Enter runtime argument value "serviceAccountType" for key "serviceAccountType"
     Then Enter runtime argument value "serviceAccount" for key "serviceAccount"
