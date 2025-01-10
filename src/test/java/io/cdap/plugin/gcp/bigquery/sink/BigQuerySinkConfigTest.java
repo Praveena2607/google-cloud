@@ -42,7 +42,7 @@ public class BigQuerySinkConfigTest {
   Method validateTimePartitioningColumnMethod;
   Map<String, String> arguments;
   private static final String invalidTableNameErrorMessage =
-          "Table name can only contain letters (lower or uppercase), numbers, '_' and '-'.";
+          "Table name '%s' can only contain letters (lower or uppercase), numbers, '_' and '-'.";
 
   @Before
   public void setup() throws NoSuchMethodException {
@@ -297,7 +297,8 @@ public class BigQuerySinkConfigTest {
       config = configBuilder.setTable(tableName).build();
       config.validate(collector);
       Assert.assertEquals(1, collector.getValidationFailures().size());
-      Assert.assertEquals(invalidTableNameErrorMessage, collector.getValidationFailures().get(0).getMessage());
+      Assert.assertEquals(String.format(invalidTableNameErrorMessage, tableName),
+          collector.getValidationFailures().get(0).getMessage());
     }
   }
 

@@ -29,7 +29,7 @@ Feature:GCSCopy - Verification of successful objects copy from one bucket to ano
     Then Validate "GCS Copy" plugin properties
     Then Close the Plugin Properties page
     Then Save and Deploy Pipeline
-    Then Run the Pipeline in Runtime
+    Then Click on the Runtime Arguments Dropdown button
     Then Enter runtime argument value "projectId" for key "projectId"
     Then Enter runtime argument value "gcsCsvFile" for GCSCopy property sourcePath key "SourcePath"
     Then Enter runtime argument value for GCSCopy property destination path key "DestPath"

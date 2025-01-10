@@ -42,7 +42,7 @@ Feature: Spanner source - Verification of Spanner to Spanner Successful data tra
     Then Close the pipeline logs
     Then Close the preview
     Then Deploy the pipeline
-    Then Run the Pipeline in Runtime
+    Then Click on the Runtime Arguments Dropdown button
     Then Enter runtime argument value "spannerInstance" for key "macroStringInstance"
     Then Enter runtime argument value "spannerDatabase" for key "macroStringDatabase"
     Then Enter runtime argument value "spannerSourceTable" for key "macroStringSourceTable"

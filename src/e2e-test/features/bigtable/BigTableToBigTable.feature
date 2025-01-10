@@ -42,7 +42,7 @@ Feature: BigTable source - Verification of BigTable to BigTable Successful Data 
     Then Close the Plugin Properties page
     Then Save the pipeline
     Then Deploy the pipeline
-    Then Run the Pipeline in Runtime
+    Then Click on the Runtime Arguments Dropdown button
     Then Enter runtime argument value "cbtSourceOutputSchema" for key "macroKeyString"
     Then Run the Pipeline in Runtime with runtime arguments
     Then Wait till pipeline is in running state
@@ -79,7 +79,7 @@ Feature: BigTable source - Verification of BigTable to BigTable Successful Data 
     Then Close the Plugin Properties page
     Then Save the pipeline
     Then Deploy the pipeline
-    Then Run the Pipeline in Runtime
+    Then Click on the Runtime Arguments Dropdown button
     Then Enter runtime argument value "cbtSourceOutputSchema" for key "macroKeyString"
     Then Run the Pipeline in Runtime with runtime arguments
     Then Wait till pipeline is in running state
@@ -115,7 +115,7 @@ Feature: BigTable source - Verification of BigTable to BigTable Successful Data 
     Then Close the Plugin Properties page
     Then Save the pipeline
     Then Deploy the pipeline
-    Then Run the Pipeline in Runtime
+    Then Click on the Runtime Arguments Dropdown button
     Then Enter runtime argument value "cbtSourceOutputSchema" for key "macroKeyString"
     Then Run the Pipeline in Runtime with runtime arguments
     Then Wait till pipeline is in running state

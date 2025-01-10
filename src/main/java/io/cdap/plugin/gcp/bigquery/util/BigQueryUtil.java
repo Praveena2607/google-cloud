@@ -672,7 +672,7 @@ public final class BigQueryUtil {
    */
   public static void validateBucket(String bucket, String bucketPropertyName, FailureCollector collector) {
     // Allowed character validation for bucket name as per https://cloud.google.com/storage/docs/naming
-    String errorMessage = "Bucket name can only contain lowercase letters, numbers, '.', '_', and '-'.";
+    String errorMessage = "Bucket name '%s' can only contain lowercase letters, numbers, '.', '_', and '-'.";
     match(bucket, bucketPropertyName, BUCKET_PATTERN, collector, errorMessage);
   }
 
@@ -685,7 +685,7 @@ public final class BigQueryUtil {
    */
   public static void validateDataset(String dataset, String datasetPropertyName, FailureCollector collector) {
     // Allowed character validation for dataset name as per https://cloud.google.com/bigquery/docs/datasets
-    String errorMessage = "Dataset name can only contain letters (lower or uppercase), numbers and '_'.";
+    String errorMessage = "Dataset name '%s' can only contain letters (lower or uppercase), numbers and '_'.";
     match(dataset, datasetPropertyName, DATASET_PATTERN, collector, errorMessage);
   }
 
@@ -698,7 +698,7 @@ public final class BigQueryUtil {
    */
   public static void validateTable(String table, String tablePropertyName, FailureCollector collector) {
     // Allowed character validation for table name as per https://cloud.google.com/bigquery/docs/tables
-    String errorMessage = "Table name can only contain letters (lower or uppercase), numbers, '_' and '-'.";
+    String errorMessage = "Table name '%s' can only contain letters (lower or uppercase), numbers, '_' and '-'.";
     match(table, tablePropertyName, TABLE_PATTERN, collector, errorMessage);
   }
 
@@ -739,7 +739,7 @@ public final class BigQueryUtil {
     if (!Strings.isNullOrEmpty(text)) {
       Pattern p = Pattern.compile(pattern);
       if (!p.matcher(text).matches()) {
-        collector.addFailure(errorMessage, null).withConfigProperty(propertyName);
+        collector.addFailure(String.format(errorMessage, text), null).withConfigProperty(propertyName);
       }
     }
   }

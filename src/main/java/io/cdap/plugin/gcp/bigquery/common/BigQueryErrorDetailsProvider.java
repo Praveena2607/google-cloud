@@ -17,6 +17,7 @@
 package io.cdap.plugin.gcp.bigquery.common;
 
 import io.cdap.plugin.gcp.common.GCPErrorDetailsProvider;
+import io.cdap.plugin.gcp.common.GCPUtils;
 
 /**
  * A custom ErrorDetailsProvider for BigQuery plugins.
@@ -25,6 +26,6 @@ public class BigQueryErrorDetailsProvider extends GCPErrorDetailsProvider {
 
   @Override
   protected String getExternalDocumentationLink() {
-    return "https://cloud.google.com/bigquery/docs/error-messages";
+    return GCPUtils.BQ_SUPPORTED_DOC_URL;
   }
 }

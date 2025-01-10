@@ -51,7 +51,7 @@ Feature: BigQuery source - Verification of BigQuery to GCS successful data trans
     Then Click on preview data for GCS sink
     Then Close the preview data
     Then Deploy the pipeline
-    Then Run the Pipeline in Runtime
+    Then Click on the Runtime Arguments Dropdown button
     Then Enter runtime argument value "projectId" for key "bqProjectId"
     Then Enter runtime argument value "projectId" for key "bqDatasetProjectId"
     Then Enter runtime argument value "serviceAccountType" for key "serviceAccountType"

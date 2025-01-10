@@ -79,6 +79,8 @@ public class GCPUtils {
                                                                    "https://www.googleapis.com/auth/bigquery");
   public static final String FQN_RESERVED_CHARACTERS_PATTERN = ".*[.:` \t\n].*";
   public static final int MILLISECONDS_MULTIPLIER = 1000;
+  public static final String GCS_SUPPORTED_DOC_URL = "https://cloud.google.com/storage/docs/json_api/v1/status-codes";
+  public static final String BQ_SUPPORTED_DOC_URL = "https://cloud.google.com/bigquery/docs/error-messages";
 
   /**
    * Load a service account from the local file system.

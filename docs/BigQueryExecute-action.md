@@ -62,6 +62,11 @@ cache that will be flushed whenever tables in the query are modified.
 It is only applicable when users choose to store the query results in a BigQuery table.
 More information can be found [here](https://cloud.google.com/data-fusion/docs/how-to/customer-managed-encryption-keys)
 
+**Destination Table Write Preference**: Provides the following options as write preferences for the destination table:
+* **Write if Empty**: Only write if the table is empty
+* **Append to Table**: Add results to existing data. Schema should match.
+* **Overwrite Table**: Replace all existing data. Schema will also be overriden.
+
 **Row As Arguments**: Row as arguments. For example, if the query is 'select min(id) as min_id, max(id) as max_id from my_dataset.my_table',
 an arguments for 'min_id' and 'max_id' will be set based on the query results. Plugins further down the pipeline can then
 reference these values with macros ${min_id} and ${max_id}.

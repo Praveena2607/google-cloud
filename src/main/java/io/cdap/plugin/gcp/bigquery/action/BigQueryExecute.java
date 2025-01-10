@@ -58,9 +58,11 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.time.Duration;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 import javax.annotation.Nullable;
 
 /**
@@ -111,6 +113,7 @@ public final class BigQueryExecute extends AbstractBigQueryAction {
     String datasetProjectId = config.getDatasetProject();
     if (config.getStoreResults() && datasetProjectId != null && datasetName != null && tableName != null) {
       builder.setDestinationTable(TableId.of(datasetProjectId, datasetName, tableName));
+      builder.setWriteDisposition(JobInfo.WriteDisposition.valueOf(config.getWritePreference()));
     }
 
     // Enable or Disable the query cache to force live query evaluation.
@@ -274,6 +277,7 @@ public final class BigQueryExecute extends AbstractBigQueryAction {
     private static final String SQL = "sql";
     private static final String DATASET = "dataset";
     private static final String TABLE = "table";
+    private static final String WRITE_PREFERENCE = "writePreference";
     private static final String NAME_LOCATION = "location";
     public static final String NAME_BQ_JOB_LABELS = "jobLabels";
     private static final int ERROR_CODE_NOT_FOUND = 404;
@@ -290,6 +294,8 @@ public final class BigQueryExecute extends AbstractBigQueryAction {
     // Sn = a * (1 - r^n) / (r - 1)
     public static final long DEFULT_MAX_RETRY_DURATION_SECONDS = 63L;
     public static final int DEFAULT_READ_TIMEOUT = 120;
+    public static final Set<String> VALID_WRITE_PREFERENCES = Arrays.stream(JobInfo.WriteDisposition.values())
+        .map(Enum::name).collect(Collectors.toSet());
 
     @Description("Dialect of the SQL command. The value must be 'legacy' or 'standard'. " +
       "If set to 'standard', the query will use BigQuery's standard SQL: " +
@@ -398,13 +404,20 @@ public final class BigQueryExecute extends AbstractBigQueryAction {
     @Description("Timeout in seconds to read data from an established HTTP connection (Default value is 120).")
     private Integer readTimeout;
 
+    @Name(WRITE_PREFERENCE)
+    @Nullable
+    @Macro
+    @Description("Specifies if a job should overwrite or append the existing destination table if it already exists.")
+    private String writePreference;
+
     private Config(@Nullable String project, @Nullable String serviceAccountType, @Nullable String serviceFilePath,
                    @Nullable String serviceAccountJson, @Nullable String dataset, @Nullable String table,
                    @Nullable String location, @Nullable String cmekKey, @Nullable String dialect, @Nullable String sql,
                    @Nullable String mode, @Nullable Boolean storeResults, @Nullable String jobLabelKeyValue,
                    @Nullable String rowAsArguments, @Nullable Boolean retryOnBackendError,
                    @Nullable Long initialRetryDuration, @Nullable Long maxRetryDuration,
-                   @Nullable Double retryMultiplier, @Nullable Integer maxRetryCount, @Nullable Integer readTimeout) {
+                   @Nullable Double retryMultiplier, @Nullable Integer maxRetryCount, @Nullable Integer readTimeout,
+                   @Nullable String writePreference) {
       this.project = project;
       this.serviceAccountType = serviceAccountType;
       this.serviceFilePath = serviceFilePath;
@@ -425,6 +438,7 @@ public final class BigQueryExecute extends AbstractBigQueryAction {
       this.maxRetryCount = maxRetryCount;
       this.retryMultiplier = retryMultiplier;
       this.readTimeout = readTimeout;
+      this.writePreference = writePreference;
     }
 
     public boolean isLegacySQL() {
@@ -449,6 +463,11 @@ public final class BigQueryExecute extends AbstractBigQueryAction {
 
     public Boolean getStoreResults() {
       return storeResults == null || storeResults;
+    }
+
+    public String getWritePreference() {
+      String defaultPreference = JobInfo.WriteDisposition.WRITE_EMPTY.name();
+      return Strings.isNullOrEmpty(writePreference) ? defaultPreference : writePreference.toUpperCase();
     }
 
     public QueryJobConfiguration.Priority getMode() {
@@ -546,7 +565,23 @@ public final class BigQueryExecute extends AbstractBigQueryAction {
         validateJobLabelKeyValue(failureCollector);
       }
 
+      if (!containsMacro(WRITE_PREFERENCE)) {
+        validateWritePreference(failureCollector, getWritePreference());
+      }
+
       failureCollector.getOrThrowException();
+    }
+
+    void validateWritePreference(FailureCollector failureCollector, String writePreference) {
+      if (!VALID_WRITE_PREFERENCES.contains(writePreference)) {
+        failureCollector.addFailure(
+            String.format("Invalid write preference '%s'. Allowed values are '%s'.",
+                writePreference, VALID_WRITE_PREFERENCES.toString()
+            ),
+            "Please provide a valid write preference."
+        )
+        .withConfigProperty(WRITE_PREFERENCE);
+      }
     }
 
     void validateJobLabelKeyValue(FailureCollector failureCollector) {
@@ -677,6 +712,7 @@ public final class BigQueryExecute extends AbstractBigQueryAction {
       private Integer maxRetryCount;
       private Double retryMultiplier;
       private Integer readTimeout;
+      private String writePreference;
 
       public Builder setProject(@Nullable String project) {
         this.project = project;
@@ -778,6 +814,11 @@ public final class BigQueryExecute extends AbstractBigQueryAction {
         return this;
       }
 
+      public Builder setWritePreference(@Nullable String writePreference) {
+        this.writePreference = writePreference;
+        return this;
+      }
+
       public Config build() {
         return new Config(
           project,
@@ -799,7 +840,8 @@ public final class BigQueryExecute extends AbstractBigQueryAction {
           maxRetryDuration,
           retryMultiplier,
           maxRetryCount,
-          readTimeout
+          readTimeout,
+          writePreference
         );
       }
     }
