@@ -73,9 +73,9 @@ Feature: BigQuery source - Verification of BigQuery to GCS successful data trans
   @CMEK @BQ_SOURCE_TEST @GCS_SINK_TEST
   Scenario:Validate successful records transfer from BigQuery to GCS with macro arguments for partition start date and partition end date
     Given Open Datafusion Project to configure pipeline
-    When Source is BigQuery
-    When Sink is GCS
-    Then Open BigQuery source properties
+    When Expand Plugin group in the LHS plugins list: "Source"
+    When Select plugin: "BigQuery" from the plugins list as: "Source"
+    Then Navigate to the properties page of plugin: "BigQuery"
     Then Enter BigQuery property reference name
     Then Enter BigQuery property "projectId" as macro argument "bqProjectId"
     Then Enter BigQuery property "datasetProjectId" as macro argument "bqDatasetProjectId"
@@ -88,7 +88,9 @@ Feature: BigQuery source - Verification of BigQuery to GCS successful data trans
     Then Enter BigQuery property "table" as macro argument "bqSourceTable"
     Then Validate "BigQuery" plugin properties
     Then Close the BigQuery properties
-    Then Open GCS sink properties
+    When Expand Plugin group in the LHS plugins list: "Sink"
+    When Select plugin: "GCS" from the plugins list as: "Sink"
+    Then Navigate to the properties page of plugin: "GCS"
     Then Enter GCS property reference name
     Then Enter GCS property "projectId" as macro argument "gcsProjectId"
     Then Enter GCS property "serviceAccountType" as macro argument "serviceAccountType"
@@ -148,9 +150,9 @@ Feature: BigQuery source - Verification of BigQuery to GCS successful data trans
   @CMEK @BQ_SOURCE_TEST @GCS_SINK_TEST
   Scenario:Validate successful records transfer from BigQuery to GCS with macro arguments for filter and Output Schema
     Given Open Datafusion Project to configure pipeline
-    When Source is BigQuery
-    When Sink is GCS
-    Then Open BigQuery source properties
+    When Expand Plugin group in the LHS plugins list: "Source"
+    When Select plugin: "BigQuery" from the plugins list as: "Source"
+    Then Navigate to the properties page of plugin: "BigQuery"
     Then Enter BigQuery property reference name
     Then Enter BigQuery property "projectId" as macro argument "bqProjectId"
     Then Enter BigQuery property "datasetProjectId" as macro argument "bqDatasetProjectId"
@@ -163,7 +165,9 @@ Feature: BigQuery source - Verification of BigQuery to GCS successful data trans
     Then Select Macro action of output schema property: "Output Schema-macro-input" and set the value to "bqOutputSchema"
     Then Validate "BigQuery" plugin properties
     Then Close the BigQuery properties
-    Then Open GCS sink properties
+    When Expand Plugin group in the LHS plugins list: "Sink"
+    When Select plugin: "GCS" from the plugins list as: "Sink"
+    Then Navigate to the properties page of plugin: "GCS"
     Then Enter GCS property reference name
     Then Enter GCS property "projectId" as macro argument "gcsProjectId"
     Then Enter GCS property "serviceAccountType" as macro argument "serviceAccountType"
