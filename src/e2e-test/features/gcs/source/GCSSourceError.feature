@@ -11,6 +11,7 @@ Feature: GCS source - Verify GCS Source plugin error scenarios
       | property        |
       | path            |
       | format          |
+      | referenceName   |
 
   Scenario: To verify Error message for invalid bucket name
     Given Open Datafusion Project to configure pipeline

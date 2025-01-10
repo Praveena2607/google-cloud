@@ -39,6 +39,7 @@ import io.cdap.cdap.api.data.batch.Input;
 import io.cdap.cdap.api.data.format.StructuredRecord;
 import io.cdap.cdap.api.data.schema.Schema;
 import io.cdap.cdap.api.dataset.lib.KeyValue;
+import io.cdap.cdap.api.exception.ProgramFailureException;
 import io.cdap.cdap.etl.api.Emitter;
 import io.cdap.cdap.etl.api.FailureCollector;
 import io.cdap.cdap.etl.api.PipelineConfigurer;
@@ -48,7 +49,9 @@ import io.cdap.cdap.etl.api.batch.BatchSource;
 import io.cdap.cdap.etl.api.batch.BatchSourceContext;
 import io.cdap.cdap.etl.api.connector.Connector;
 import io.cdap.cdap.etl.api.engine.sql.SQLEngineInput;
+import io.cdap.cdap.etl.api.exception.ErrorContext;
 import io.cdap.cdap.etl.api.exception.ErrorDetailsProviderSpec;
+import io.cdap.cdap.etl.api.exception.ErrorPhase;
 import io.cdap.cdap.etl.api.validation.ValidationFailure;
 import io.cdap.plugin.common.Asset;
 import io.cdap.plugin.common.LineageRecorder;
@@ -60,6 +63,7 @@ import io.cdap.plugin.gcp.bigquery.util.BigQueryConstants;
 import io.cdap.plugin.gcp.bigquery.util.BigQueryUtil;
 import io.cdap.plugin.gcp.common.CmekUtils;
 import io.cdap.plugin.gcp.common.GCPUtils;
+import io.cdap.plugin.gcp.gcs.GCSErrorDetailsProvider;
 import org.apache.avro.generic.GenericData;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.io.LongWritable;
@@ -147,9 +151,16 @@ public final class BigQuerySource extends BatchSource<LongWritable, GenericData.
       collector.getOrThrowException();
     }
 
-    BigQuery bigQuery = GCPUtils.getBigQuery(config.getProject(), credentials, null);
-    Dataset dataset = bigQuery.getDataset(DatasetId.of(config.getDatasetProject(), config.getDataset()));
-    Storage storage = GCPUtils.getStorage(config.getProject(), credentials);
+    BigQuery bigQuery;
+    Dataset dataset;
+    try {
+      bigQuery = GCPUtils.getBigQuery(config.getProject(), credentials, null);
+      dataset = bigQuery.getDataset(DatasetId.of(config.getDatasetProject(), config.getDataset()));
+    } catch (Exception e) {
+      ProgramFailureException ex = new BigQueryErrorDetailsProvider().getExceptionDetails(e,
+          new ErrorContext(ErrorPhase.READING));
+      throw ex == null ? e : ex;
+    }
 
     // Get Configuration for this run
     bucketPath = UUID.randomUUID().toString();
@@ -169,10 +180,18 @@ public final class BigQuerySource extends BatchSource<LongWritable, GenericData.
                                                           dataset, config.getBucket());
 
     // Configure GCS Bucket to use
+    Storage storage;
+    try {
+      storage =  GCPUtils.getStorage(config.getProject(), credentials);;
+    } catch (Exception e) {
+      ProgramFailureException ex = new GCSErrorDetailsProvider().getExceptionDetails(e,
+          new ErrorContext(ErrorPhase.READING));
+      throw ex == null ? e : ex;
+    }
     String bucket = null;
     try {
-      bucket = BigQuerySourceUtils.getOrCreateBucket(configuration, storage, bucketName, dataset, bucketPath,
-        cmekKeyName);
+      bucket = BigQuerySourceUtils.getOrCreateBucket(configuration, storage, bucketName, dataset,
+          bucketPath, cmekKeyName);
     } catch (Exception e) {
       String errorReason = "Failed to create bucket.";
       collector.addFailure(String.format("%s %s", errorReason, e.getMessage()), null)

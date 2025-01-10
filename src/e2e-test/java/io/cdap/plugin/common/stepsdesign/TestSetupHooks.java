@@ -134,6 +134,11 @@ public class TestSetupHooks {
     gcsSourceBucketName = createGCSBucketWithFile(PluginPropertyUtils.pluginProp("gcsTsvFile"));
   }
 
+  @Before(order = 1, value = "@GCS_JSON_TEST")
+  public static void createBucketWithJSONFile() throws IOException, URISyntaxException {
+    gcsSourceBucketName = createGCSBucketWithFile(PluginPropertyUtils.pluginProp("gcsJsonFile"));
+  }
+
   @Before(order = 1, value = "@GCS_BLOB_TEST")
   public static void createBucketWithBlobFile() throws IOException, URISyntaxException {
     gcsSourceBucketName = createGCSBucketWithFile(PluginPropertyUtils.pluginProp("gcsBlobFile"));
@@ -205,7 +210,7 @@ public class TestSetupHooks {
     "or @GCS_DELIMITED_TEST or @GCS_TEXT_TEST or @GCS_OUTPUT_FIELD_TEST or @GCS_DATATYPE_1_TEST or " +
     "@GCS_DATATYPE_2_TEST or @GCS_READ_RECURSIVE_TEST or @GCS_DELETE_WILDCARD_TEST or @GCS_CSV_RANGE_TEST or" +
     " @GCS_PARQUET_TEST or @GCS_AVRO_TEST or @GCS_DATATYPE_TEST or @GCS_AVRO_FILE or @GCS_CSV or " +
-    "GCS_MULTIPLE_FILES_TEST or GCS_MULTIPLE_FILES_REGEX_TEST")
+    "GCS_MULTIPLE_FILES_TEST or GCS_MULTIPLE_FILES_REGEX_TEST or @GCS_JSON_TEST")
   public static void deleteSourceBucketWithFile() {
     deleteGCSBucket(gcsSourceBucketName);
     PluginPropertyUtils.removePluginProp("gcsSourceBucketName");

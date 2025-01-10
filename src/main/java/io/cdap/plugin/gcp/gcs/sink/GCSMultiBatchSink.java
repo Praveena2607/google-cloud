@@ -32,6 +32,7 @@ import io.cdap.cdap.api.data.batch.OutputFormatProvider;
 import io.cdap.cdap.api.data.format.StructuredRecord;
 import io.cdap.cdap.api.data.schema.Schema;
 import io.cdap.cdap.api.dataset.lib.KeyValue;
+import io.cdap.cdap.api.exception.ProgramFailureException;
 import io.cdap.cdap.api.plugin.InvalidPluginConfigException;
 import io.cdap.cdap.api.plugin.InvalidPluginProperty;
 import io.cdap.cdap.api.plugin.PluginProperties;
@@ -41,7 +42,9 @@ import io.cdap.cdap.etl.api.PipelineConfigurer;
 import io.cdap.cdap.etl.api.batch.BatchSink;
 import io.cdap.cdap.etl.api.batch.BatchSinkContext;
 import io.cdap.cdap.etl.api.connector.Connector;
+import io.cdap.cdap.etl.api.exception.ErrorContext;
 import io.cdap.cdap.etl.api.exception.ErrorDetailsProviderSpec;
+import io.cdap.cdap.etl.api.exception.ErrorPhase;
 import io.cdap.cdap.etl.api.validation.ValidatingOutputFormat;
 import io.cdap.plugin.common.batch.sink.SinkOutputFormatProvider;
 import io.cdap.plugin.format.FileFormat;
@@ -126,7 +129,7 @@ public class GCSMultiBatchSink extends BatchSink<StructuredRecord, NullWritable,
   }
 
   @Override
-  public void prepareRun(BatchSinkContext context) throws IOException, InstantiationException {
+  public void prepareRun(BatchSinkContext context) throws Exception {
     FailureCollector collector = context.getFailureCollector();
     config.validate(collector, context.getArguments().asMap());
     collector.getOrThrowException();
@@ -156,15 +159,22 @@ public class GCSMultiBatchSink extends BatchSink<StructuredRecord, NullWritable,
     }
 
     String bucketName = config.getBucket(collector);
-    Storage storage = GCPUtils.getStorage(config.connection.getProject(), credentials);
-    String errorReasonFormat = "Error code: %s, Unable to read or access GCS bucket.";
-    String correctiveAction = "Ensure you entered the correct bucket path and "
-      + "have permissions for it.";
+    Storage storage;
+    try {
+      storage = GCPUtils.getStorage(config.connection.getProject(), credentials);
+    } catch (Exception e) {
+      ProgramFailureException ex = new GCSErrorDetailsProvider().getExceptionDetails(e,
+          new ErrorContext(ErrorPhase.READING));
+      throw ex == null ? e : ex;
+    }
     try {
       if (storage.get(bucketName) == null) {
         GCPUtils.createBucket(storage, bucketName, config.getLocation(), cmekKeyName);
       }
     } catch (StorageException e) {
+      String errorReasonFormat = "Error code: %s, Unable to read or access GCS bucket.";
+      String correctiveAction = "Ensure you entered the correct bucket path and "
+          + "have permissions for it.";
       String errorReason = String.format(errorReasonFormat, e.getCode());
       collector.addFailure(String.format("%s %s", errorReason, e.getMessage()), correctiveAction)
         .withStacktrace(e.getStackTrace());
