@@ -232,14 +232,25 @@ public class BigQueryBase implements E2EHelper {
       expectedErrorMessage = PluginPropertyUtils
         .errorProp(E2ETestConstants.ERROR_MSG_BQ_INCORRECT_CHUNKSIZE);
     } else if (property.equalsIgnoreCase("bucket")) {
+      String propertyValue = PluginPropertyUtils.pluginProp("bqInvalidTemporaryBucket");
       expectedErrorMessage = PluginPropertyUtils
-        .errorProp(E2ETestConstants.ERROR_MSG_BQ_INCORRECT_TEMPORARY_BUCKET);
+        .errorProp(E2ETestConstants.ERROR_MSG_BQ_INCORRECT_TEMPORARY_BUCKET)
+        .replace("VALUE", propertyValue);
     } else if (property.equalsIgnoreCase("table")) {
+      String propertyValue = PluginPropertyUtils.pluginProp("bqInvalidSinkTable");
       expectedErrorMessage = PluginPropertyUtils
-        .errorProp(E2ETestConstants.ERROR_MSG_INCORRECT_TABLE_NAME);
+        .errorProp(E2ETestConstants.ERROR_MSG_INCORRECT_TABLE_NAME)
+        .replace("VALUE", propertyValue);
+    } else if (property.equalsIgnoreCase("dataset")) {
+      String propertyValue = PluginPropertyUtils.pluginProp("bqInvalidSinkDataset");
+      expectedErrorMessage = PluginPropertyUtils
+        .errorProp(E2ETestConstants.ERROR_MSG_INCORRECT_DATASET_NAME)
+        .replace("VALUE", propertyValue);
     } else {
+      String propertyValue = PluginPropertyUtils.pluginProp("bqInvalidPropertyValue");
       expectedErrorMessage = PluginPropertyUtils.errorProp(E2ETestConstants.ERROR_MSG_BQ_INCORRECT_PROPERTY).
-        replaceAll("PROPERTY", property.substring(0, 1).toUpperCase() + property.substring(1));
+        replaceAll("PROPERTY", property.substring(0, 1).toUpperCase() + property.substring(1))
+        .replace("VALUE", propertyValue);
     }
     String actualErrorMessage = PluginPropertyUtils.findPropertyErrorElement(property).getText();
     Assert.assertEquals(expectedErrorMessage, actualErrorMessage);

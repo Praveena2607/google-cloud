@@ -30,11 +30,14 @@ import io.cdap.cdap.api.data.batch.OutputFormatProvider;
 import io.cdap.cdap.api.data.format.StructuredRecord;
 import io.cdap.cdap.api.data.schema.Schema;
 import io.cdap.cdap.api.dataset.lib.KeyValue;
+import io.cdap.cdap.api.exception.ProgramFailureException;
 import io.cdap.cdap.etl.api.Emitter;
 import io.cdap.cdap.etl.api.FailureCollector;
 import io.cdap.cdap.etl.api.batch.BatchSink;
 import io.cdap.cdap.etl.api.batch.BatchSinkContext;
+import io.cdap.cdap.etl.api.exception.ErrorContext;
 import io.cdap.cdap.etl.api.exception.ErrorDetailsProviderSpec;
+import io.cdap.cdap.etl.api.exception.ErrorPhase;
 import io.cdap.plugin.common.Asset;
 import io.cdap.plugin.gcp.bigquery.common.BigQueryErrorDetailsProvider;
 import io.cdap.plugin.gcp.bigquery.sink.lib.BigQueryTableFieldSchema;
@@ -43,6 +46,7 @@ import io.cdap.plugin.gcp.bigquery.util.BigQueryTypeSize;
 import io.cdap.plugin.gcp.bigquery.util.BigQueryUtil;
 import io.cdap.plugin.gcp.common.CmekUtils;
 import io.cdap.plugin.gcp.common.GCPUtils;
+import io.cdap.plugin.gcp.gcs.GCSErrorDetailsProvider;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.io.NullWritable;
 import org.slf4j.Logger;
@@ -90,7 +94,6 @@ public abstract class AbstractBigQuerySink extends BatchSink<StructuredRecord, S
     Credentials credentials = serviceAccount == null ?
       null : GCPUtils.loadServiceAccountCredentials(serviceAccount, config.isServiceAccountFilePath());
     String project = config.getProject();
-    bigQuery = GCPUtils.getBigQuery(project, credentials, null);
     FailureCollector collector = context.getFailureCollector();
     CryptoKeyName cmekKeyName = CmekUtils.getCmekKey(config.cmekKey, context.getArguments().asMap(), collector);
     collector.getOrThrowException();
@@ -98,10 +101,25 @@ public abstract class AbstractBigQuerySink extends BatchSink<StructuredRecord, S
 
     // Get required dataset ID and dataset instance (if it exists)
     DatasetId datasetId = DatasetId.of(config.getDatasetProject(), config.getDataset());
-    Dataset dataset = bigQuery.getDataset(datasetId);
+    Dataset dataset;
+    try {
+      bigQuery = GCPUtils.getBigQuery(project, credentials, null);
+      dataset = bigQuery.getDataset(datasetId);
+    } catch (Exception e) {
+      ProgramFailureException ex = new BigQueryErrorDetailsProvider().getExceptionDetails(e,
+          new ErrorContext(ErrorPhase.WRITING));
+      throw ex == null ? e : ex;
+    }
 
     // Get the required bucket name and bucket instance (if it exists)
-    Storage storage =  GCPUtils.getStorage(project, credentials);
+    Storage storage;
+    try {
+      storage =  GCPUtils.getStorage(project, credentials);;
+    } catch (Exception e) {
+      ProgramFailureException ex = new GCSErrorDetailsProvider().getExceptionDetails(e,
+          new ErrorContext(ErrorPhase.WRITING));
+      throw ex == null ? e : ex;
+    }
     String bucketName = BigQueryUtil.getStagingBucketName(context.getArguments().asMap(), config.getLocation(),
                                                           dataset, config.getBucket());
     bucketName = BigQuerySinkUtils.configureBucket(baseConfiguration, bucketName, runUUID.toString());

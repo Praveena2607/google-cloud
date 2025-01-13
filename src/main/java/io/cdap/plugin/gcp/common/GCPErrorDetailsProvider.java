@@ -36,6 +36,7 @@ import java.util.List;
  * A custom ErrorDetailsProvider for GCP plugins.
  */
 public class GCPErrorDetailsProvider implements ErrorDetailsProvider {
+  private static final String ERROR_MESSAGE_FORMAT = "Error occurred in the phase: '%s'. %s: %s";
 
   /**
    * Get a ProgramFailureException with the given error
@@ -71,12 +72,12 @@ public class GCPErrorDetailsProvider implements ErrorDetailsProvider {
    * @param e The HttpResponseException to get the error information from.
    * @return A ProgramFailureException with the given error information.
    */
-  private ProgramFailureException getProgramFailureException(HttpResponseException e, ErrorContext errorContext) {
+  private ProgramFailureException getProgramFailureException(HttpResponseException e,
+      ErrorContext errorContext) {
     Integer statusCode = e.getStatusCode();
     ErrorUtils.ActionErrorPair pair = ErrorUtils.getActionErrorByStatusCode(statusCode);
     String errorReason = String.format("%s %s. %s", e.getStatusCode(), e.getStatusMessage(),
       pair.getCorrectiveAction());
-    String errorMessageFormat = "Error occurred in the phase: '%s'. Error message: %s";
 
     String errorMessage = e.getMessage();
     String externalDocumentationLink = null;
@@ -95,7 +96,8 @@ public class GCPErrorDetailsProvider implements ErrorDetailsProvider {
     }
 
     return ErrorUtils.getProgramFailureException(new ErrorCategory(ErrorCategoryEnum.PLUGIN),
-      errorReason, String.format(errorMessageFormat, errorContext.getPhase(), errorMessage),
+      errorReason, String.format(ERROR_MESSAGE_FORMAT, errorContext.getPhase(),
+            e.getClass().getName(), errorMessage),
       pair.getErrorType(), true, ErrorCodeType.HTTP, statusCode.toString(),
         externalDocumentationLink, e);
   }
@@ -122,11 +124,12 @@ public class GCPErrorDetailsProvider implements ErrorDetailsProvider {
    * @param e The IllegalArgumentException to get the error information from.
    * @return A ProgramFailureException with the given error information.
    */
-  private ProgramFailureException getProgramFailureException(IllegalArgumentException e, ErrorContext errorContext) {
+  private ProgramFailureException getProgramFailureException(IllegalArgumentException e,
+      ErrorContext errorContext) {
     String errorMessage = e.getMessage();
-    String errorMessageFormat = "Error occurred in the phase: '%s'. Error message: %s";
-    return ErrorUtils.getProgramFailureException(new ErrorCategory(ErrorCategoryEnum.PLUGIN), errorMessage,
-      String.format(errorMessageFormat, errorContext.getPhase(), errorMessage), ErrorType.USER, false, e);
+    return ErrorUtils.getProgramFailureException(new ErrorCategory(ErrorCategoryEnum.PLUGIN),
+        errorMessage, String.format(ERROR_MESSAGE_FORMAT, errorContext.getPhase(),
+            e.getClass().getName(), errorMessage), ErrorType.USER, false, e);
   }
 
   /**
@@ -136,11 +139,12 @@ public class GCPErrorDetailsProvider implements ErrorDetailsProvider {
    * @param e The IllegalStateException to get the error information from.
    * @return A ProgramFailureException with the given error information.
    */
-  private ProgramFailureException getProgramFailureException(IllegalStateException e, ErrorContext errorContext) {
+  private ProgramFailureException getProgramFailureException(IllegalStateException e,
+      ErrorContext errorContext) {
     String errorMessage = e.getMessage();
-    String errorMessageFormat = "Error occurred in the phase: '%s'. Error message: %s";
-    return ErrorUtils.getProgramFailureException(new ErrorCategory(ErrorCategoryEnum.PLUGIN), errorMessage,
-      String.format(errorMessageFormat, errorContext.getPhase(), errorMessage), ErrorType.SYSTEM, false, e);
+    return ErrorUtils.getProgramFailureException(new ErrorCategory(ErrorCategoryEnum.PLUGIN),
+        errorMessage, String.format(ERROR_MESSAGE_FORMAT, errorContext.getPhase(),
+            e.getClass().getName(), errorMessage), ErrorType.SYSTEM, false, e);
   }
 
   /**

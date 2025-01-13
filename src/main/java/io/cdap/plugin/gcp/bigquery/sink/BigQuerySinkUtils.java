@@ -199,8 +199,10 @@ public final class BigQuerySinkUtils {
         ErrorUtils.ActionErrorPair pair = ErrorUtils.getActionErrorByStatusCode(e.getCode());
         String errorReason = String.format("%s %s %s For more details, see %s", e.getCode(),
             e.getMessage(), pair.getCorrectiveAction(), GCPUtils.BQ_SUPPORTED_DOC_URL);
+        String errorMessageFinal = String.format("%s %s: %s", errorMessage.get(),
+            e.getClass().getName(), e.getMessage());
         throw ErrorUtils.getProgramFailureException(
-          new ErrorCategory(ErrorCategory.ErrorCategoryEnum.PLUGIN), errorReason, errorMessage.get(),
+          new ErrorCategory(ErrorCategory.ErrorCategoryEnum.PLUGIN), errorReason, errorMessageFinal,
           pair.getErrorType(), true, ErrorCodeType.HTTP, String.valueOf(e.getCode()),
             GCPUtils.BQ_SUPPORTED_DOC_URL, e);
       }
@@ -249,8 +251,10 @@ public final class BigQuerySinkUtils {
         ErrorUtils.ActionErrorPair pair = ErrorUtils.getActionErrorByStatusCode(e.getCode());
         String errorReason = String.format("%s %s %s For more details, see %s", e.getCode(),
             e.getMessage(), pair.getCorrectiveAction(), GCPUtils.GCS_SUPPORTED_DOC_URL);
+        String errorMessageFinal = String.format("%s %s: %s", errorMessage.get(),
+            e.getClass().getName(), e.getMessage());
         throw ErrorUtils.getProgramFailureException(
-          new ErrorCategory(ErrorCategory.ErrorCategoryEnum.PLUGIN), errorReason, errorMessage.get(),
+          new ErrorCategory(ErrorCategory.ErrorCategoryEnum.PLUGIN), errorReason, errorMessageFinal,
           pair.getErrorType(), true, ErrorCodeType.HTTP, String.valueOf(e.getCode()),
             GCPUtils.GCS_SUPPORTED_DOC_URL, e);
       }
