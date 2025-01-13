@@ -94,14 +94,14 @@ public class BigQueryBase implements E2EHelper {
   }
 
   @Then("Validate records transferred to target table is equal to number of records from source table " +
-                "with filter {string}")
+    "with filter {string}")
   public void validateRecordsTransferredToTargetTableIsEqualToNumberOfRecordsFromSourceTableWithFilter(String filter)
-                throws IOException, InterruptedException {
+    throws IOException, InterruptedException {
     String projectId = (PluginPropertyUtils.pluginProp("projectId"));
     String datasetName = (PluginPropertyUtils.pluginProp("dataset"));
     int countRecordsTarget = BigQueryClient.countBqQuery(TestSetupHooks.bqTargetTable);
     String selectQuery = "SELECT count(*)  FROM `" + projectId + "." + datasetName + "." +
-                  TestSetupHooks.bqTargetTable + "` WHERE " + PluginPropertyUtils.pluginProp(filter);
+      TestSetupHooks.bqTargetTable + "` WHERE " + PluginPropertyUtils.pluginProp(filter);
     Optional<String> result = BigQueryClient.getSoleQueryResult(selectQuery);
     int count = result.map(Integer::parseInt).orElse(0);
     BeforeActions.scenario.write("Number of records transferred with respect to filter:" + count);
@@ -110,7 +110,7 @@ public class BigQueryBase implements E2EHelper {
 
   @Then("Validate partition date in output partitioned table")
   public void validatePartitionDateInOutputPartitionedTable()
-                throws IOException, InterruptedException {
+    throws IOException, InterruptedException {
     Optional<String> result = BigQueryClient
       .getSoleQueryResult("SELECT distinct  _PARTITIONDATE as pt FROM `" +
                             (PluginPropertyUtils.pluginProp("projectId")) + "." +
@@ -233,10 +233,10 @@ public class BigQueryBase implements E2EHelper {
         .errorProp(E2ETestConstants.ERROR_MSG_BQ_INCORRECT_CHUNKSIZE);
     } else if (property.equalsIgnoreCase("bucket")) {
       expectedErrorMessage = PluginPropertyUtils
-              .errorProp(E2ETestConstants.ERROR_MSG_BQ_INCORRECT_TEMPORARY_BUCKET);
+        .errorProp(E2ETestConstants.ERROR_MSG_BQ_INCORRECT_TEMPORARY_BUCKET);
     } else if (property.equalsIgnoreCase("table")) {
       expectedErrorMessage = PluginPropertyUtils
-              .errorProp(E2ETestConstants.ERROR_MSG_INCORRECT_TABLE_NAME);
+        .errorProp(E2ETestConstants.ERROR_MSG_INCORRECT_TABLE_NAME);
     } else {
       expectedErrorMessage = PluginPropertyUtils.errorProp(E2ETestConstants.ERROR_MSG_BQ_INCORRECT_PROPERTY).
         replaceAll("PROPERTY", property.substring(0, 1).toUpperCase() + property.substring(1));
@@ -260,5 +260,4 @@ public class BigQueryBase implements E2EHelper {
     BeforeActions.scenario.write("Number of records transferred from source table to target table:" + count);
     Assert.assertEquals(count, countRecordsTarget);
   }
-
 }

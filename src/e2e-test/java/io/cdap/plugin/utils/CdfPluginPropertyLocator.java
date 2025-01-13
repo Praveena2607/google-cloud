@@ -39,8 +39,7 @@ public enum CdfPluginPropertyLocator {
   GCS_MOVE_DESTINATION_PATH("destPath"),
   PARTITION_START_DATE("partitionFrom"),
   PARTITION_END_DATE("partitionTo"),
-  FILTER("filter"),
-  OUTPUT_SCHEMA("Output Schema-macro-input");
+  FILTER("filter");
 
   public String pluginProperty;
   CdfPluginPropertyLocator(String property) {
@@ -79,7 +78,6 @@ public enum CdfPluginPropertyLocator {
       .put("gcsMoveSourcePath", CdfPluginPropertyLocator.GCS_MOVE_SOURCE_PATH)
       .put("gcsMoveDestinationPath", CdfPluginPropertyLocator.GCS_MOVE_DESTINATION_PATH)
       .put("filter", CdfPluginPropertyLocator.FILTER)
-      .put("Output Schema-macro-input", CdfPluginPropertyLocator.OUTPUT_SCHEMA)
       .put("partitionFrom", CdfPluginPropertyLocator.PARTITION_START_DATE)
       .put("partitionTo", CdfPluginPropertyLocator.PARTITION_END_DATE)
       .build();
