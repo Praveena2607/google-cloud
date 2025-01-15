@@ -2,12 +2,12 @@
 
  Description
  -----------
- Performs an BigQueryTable Query request to fetch arguments to set in the pipeline.
+ Performs a BigQueryTable Query request to fetch arguments to set in the pipeline.
 
  This is most commonly used when the structure of a pipeline is static,
  and its configuration needs to be managed outside the pipeline itself.
 
- Arguments name must match column name in BigQueryTable
+ Argument names must match column names in BigQueryTable
 
  Credentials
  -----------
@@ -34,7 +34,7 @@ configured Project ID. `BigQuery Data Viewer` role on this project must be grant
 to read BigQuery data from this project. 
 
  **Dataset Name**: Dataset the table belongs to. A dataset is contained within a specific project.
- Datasets are top-level containers that are used to organize and control access to tables and views.
+ Datasets are top-level containers used to organize and control access to tables and views.
 
  **Table**: Table to read from. A table contains individual records organized in rows.
  Each record is composed of columns (also called fields).
@@ -43,9 +43,9 @@ to read BigQuery data from this project.
  **Argument Selection Conditions**: A set of conditions for identifying the arguments to run a pipeline.
  A particular use case for this would be feed=marketing; date=20200427.
 
- **Arguments Columns**:  Name of the columns, separated by comma that contains the arguments for this run
+ **Arguments Columns**:  Name of the columns, separated by commas, that contains the arguments for this run.
 
- **Service Account**  - service account key used for authorization
+ **Service Account**  - service account key used for authorization.
 
  * **File Path**: Path on the local file system of the service account key used for
  authorization. Can be set to 'auto-detect' when running on a Dataproc cluster.
